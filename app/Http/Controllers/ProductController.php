@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -97,6 +98,13 @@ class ProductController extends Controller
 
     public function productDelete($id)
     {
+        $product = Product::where('id', $id)->first();
+        $path = $product->image;
+
+        if ($path) {
+            Storage::delete('public/' . $path);
+        }
+
         Product::where('id', $id)->delete();
 
         return redirect()->route('product#list')->with(['deleteMessage' => 'Product Delete Successfully.']);
